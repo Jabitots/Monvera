@@ -1,0 +1,20 @@
+$kind: http-request
+url: "{{baseUrl}}/orders"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "customerId": "{{customerId}}",
+      "orderItems": [{ "productId": "{{productId}}", "quantity": 2 }],
+      "notes": "Postman inventory test"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Order created', () => pm.response.to.have.status(201));
+      const j = pm.response.json(); if (j.data?._id) pm.collectionVariables.set('orderId', j.data._id);
+    language: text/javascript
+order: 1000

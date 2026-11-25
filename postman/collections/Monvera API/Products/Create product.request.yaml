@@ -1,0 +1,22 @@
+$kind: http-request
+url: "{{baseUrl}}/products"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "productName": "Postman Order Test Product",
+      "description": "Product created for order testing.",
+      "category": "Testing",
+      "price": 12.5,
+      "stockQuantity": 20
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Product created', () => pm.response.to.have.status(201));
+      const j = pm.response.json(); if (j.data?._id) pm.collectionVariables.set('productId', j.data._id);
+    language: text/javascript
+order: 1000

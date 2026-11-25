@@ -1,0 +1,27 @@
+$kind: http-request
+url: "{{baseUrl}}/auth/me"
+method: GET
+body:
+  type: json
+  content: "{\r
+
+    \  \"email\": \"markysh@gmail.com\",\r
+
+    \  \"password\": \"Ch0wsenOne\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+scripts:
+  - type: afterResponse
+    code: "const res = pm.response.json();\r
+
+      if (res.data && res.data.token) {\r
+
+      \  pm.environment.set(\"token\", res.data.token);\r
+
+      }"
+    language: text/javascript
+order: 6981

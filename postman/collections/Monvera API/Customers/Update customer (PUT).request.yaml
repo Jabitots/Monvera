@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{baseUrl}}/customers/{{customerId}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "fullName": "Postman Customer Updated",
+      "email": "postman.customer@example.test",
+      "contactNumber": "+1 555 010 1234",
+      "address": "100 Example Street, Test City"
+    }
+order: 4000

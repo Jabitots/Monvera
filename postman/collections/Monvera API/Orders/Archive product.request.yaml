@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{baseUrl}}/products/{{productId}}?mode=archive"
+method: DELETE
+queryParams:
+  mode: archive
+order: 9000

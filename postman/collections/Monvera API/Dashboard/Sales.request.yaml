@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{baseUrl}}/dashboard/sales?period=weekly"
+method: GET
+queryParams:
+  period: weekly
+order: 2000

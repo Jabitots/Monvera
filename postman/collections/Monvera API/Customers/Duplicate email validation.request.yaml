@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{baseUrl}}/customers"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "fullName": "Duplicate Customer",
+      "email": "POSTMAN.CUSTOMER@EXAMPLE.TEST",
+      "contactNumber": "+1 555 010 1234",
+      "address": "100 Example Street, Test City"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Duplicate email returns 409', () => pm.response.to.have.status(409));
+      pm.test('Error structure is consistent', () => pm.expect(pm.response.json()).to.have.property('success', false));
+    language: text/javascript
+order: 6000

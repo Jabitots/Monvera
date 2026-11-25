@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{baseUrl}}/products/{{productId}}"
+method: PATCH
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "price": 14
+    }
+order: 5000

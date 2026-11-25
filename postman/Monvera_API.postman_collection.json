@@ -1,0 +1,72 @@
+{
+  "info": {
+    "_postman_id": "4c4f67bc-88ae-4e1d-933f-7d24a871480a",
+    "name": "Monvera API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000/api" },
+    { "key": "customerId", "value": "" },
+    { "key": "productId", "value": "" },
+    { "key": "orderId", "value": "" }
+  ],
+  "event": [{
+    "listen": "test",
+    "script": {
+      "type": "text/javascript",
+      "exec": [
+        "const name = pm.info.requestName;",
+        "let expected = pm.request.method === 'GET' ? 200 : pm.request.method === 'POST' ? 201 : 200;",
+        "if (name === 'Duplicate email validation') expected = 409;",
+        "if (name === 'Invalid customer ObjectId' || name === 'Invalid product body' || name === 'Insufficient stock test' || name === 'Invalid order status') expected = 400;",
+        "pm.test('Expected HTTP status for ' + name, () => pm.response.to.have.status(expected));",
+        "pm.test('Response includes success flag', () => pm.expect(pm.response.json()).to.have.property('success').that.is.a('boolean'));",
+        "if (pm.response.json().success === false) pm.test('Error response includes message', () => pm.expect(pm.response.json()).to.have.property('message').that.is.a('string'));"
+      ]
+    }
+  }],
+  "item": [
+    { "name": "Health", "item": [
+      { "name": "Health check", "request": { "method": "GET", "url": "{{baseUrl}}/health" }, "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Health responds successfully', () => pm.response.to.have.status(200));", "pm.test('Response has success flag', () => pm.expect(pm.response.json().success).to.eql(true));"] } }] }
+    ]},
+    { "name": "Customers", "item": [
+      { "name": "Create customer", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"Postman Customer\",\n  \"email\": \"postman.customer@example.test\",\n  \"contactNumber\": \"+1 555 010 1234\",\n  \"address\": \"100 Example Street, Test City\"\n}" }, "url": "{{baseUrl}}/customers" }, "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Customer created', () => pm.response.to.have.status(201));", "const j = pm.response.json(); if (j.data?._id) pm.collectionVariables.set('customerId', j.data._id);"] } }] },
+      { "name": "List customers", "request": { "method": "GET", "url": "{{baseUrl}}/customers?page=1&limit=20&search=" } },
+      { "name": "Get customer", "request": { "method": "GET", "url": "{{baseUrl}}/customers/{{customerId}}" } },
+      { "name": "Update customer (PUT)", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"Postman Customer Updated\",\n  \"email\": \"postman.customer@example.test\",\n  \"contactNumber\": \"+1 555 010 1234\",\n  \"address\": \"100 Example Street, Test City\"\n}" }, "url": "{{baseUrl}}/customers/{{customerId}}" } },
+      { "name": "Update customer (PATCH)", "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"Postman Customer Updated\"\n}" }, "url": "{{baseUrl}}/customers/{{customerId}}" } },
+      { "name": "Duplicate email validation", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"Duplicate Customer\",\n  \"email\": \"POSTMAN.CUSTOMER@EXAMPLE.TEST\",\n  \"contactNumber\": \"+1 555 010 1234\",\n  \"address\": \"100 Example Street, Test City\"\n}" }, "url": "{{baseUrl}}/customers" }, "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Duplicate email returns 409', () => pm.response.to.have.status(409));", "pm.test('Error structure is consistent', () => pm.expect(pm.response.json()).to.have.property('success', false));"] } }] },
+      { "name": "Invalid customer ObjectId", "request": { "method": "GET", "url": "{{baseUrl}}/customers/not-an-object-id" }, "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Invalid id returns 400', () => pm.response.to.have.status(400));"] } }] },
+      { "name": "Get customer after creation", "request": { "method": "GET", "url": "{{baseUrl}}/customers/{{customerId}}" } }
+    ]},
+    { "name": "Products", "item": [
+      { "name": "Create product", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"productName\": \"Postman Test Product\",\n  \"description\": \"Product created for API verification.\",\n  \"category\": \"Testing\",\n  \"price\": 12.5,\n  \"stockQuantity\": 20\n}" }, "url": "{{baseUrl}}/products" }, "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Product created', () => pm.response.to.have.status(201));", "const j = pm.response.json(); if (j.data?._id) pm.collectionVariables.set('productId', j.data._id);"] } }] },
+      { "name": "List products", "request": { "method": "GET", "url": "{{baseUrl}}/products?page=1&limit=20&search=&sort=newest" } },
+      { "name": "Get product", "request": { "method": "GET", "url": "{{baseUrl}}/products/{{productId}}" } },
+      { "name": "Update product (PUT)", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"productName\": \"Postman Test Product\",\n  \"description\": \"Product updated during API verification.\",\n  \"category\": \"Testing\",\n  \"price\": 13,\n  \"stockQuantity\": 20\n}" }, "url": "{{baseUrl}}/products/{{productId}}" } },
+      { "name": "Update product (PATCH)", "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"price\": 14\n}" }, "url": "{{baseUrl}}/products/{{productId}}" } },
+      { "name": "Invalid product body", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"productName\": \"\",\n  \"price\": -1,\n  \"stockQuantity\": -3\n}" }, "url": "{{baseUrl}}/products" }, "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Invalid body returns 400', () => pm.response.to.have.status(400));"] } }] },
+      { "name": "Insufficient stock test", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"orderItems\": [{ \"productId\": \"{{productId}}\", \"quantity\": 999999 }]\n}" }, "url": "{{baseUrl}}/orders" }, "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Insufficient stock returns 400', () => pm.response.to.have.status(400));"] } }] },
+      { "name": "Get product after creation", "request": { "method": "GET", "url": "{{baseUrl}}/products/{{productId}}" } }
+    ]},
+    { "name": "Orders", "item": [
+      { "name": "Create order", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"orderItems\": [{ \"productId\": \"{{productId}}\", \"quantity\": 2 }],\n  \"notes\": \"Postman inventory test\"\n}" }, "url": "{{baseUrl}}/orders" }, "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Order created', () => pm.response.to.have.status(201));", "const j = pm.response.json(); if (j.data?._id) pm.collectionVariables.set('orderId', j.data._id);"] } }] },
+      { "name": "List orders", "request": { "method": "GET", "url": "{{baseUrl}}/orders?page=1&limit=20&status=All" } },
+      { "name": "Get order", "request": { "method": "GET", "url": "{{baseUrl}}/orders/{{orderId}}" } },
+      { "name": "Update order (PUT)", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"Processing\"\n}" }, "url": "{{baseUrl}}/orders/{{orderId}}" } },
+      { "name": "Cancel order and restore stock", "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"Cancelled\"\n}" }, "url": "{{baseUrl}}/orders/{{orderId}}" } },
+      { "name": "Delete order", "request": { "method": "DELETE", "url": "{{baseUrl}}/orders/{{orderId}}" } },
+      { "name": "Archive customer", "request": { "method": "DELETE", "url": "{{baseUrl}}/customers/{{customerId}}?mode=archive" } },
+      { "name": "Delete customer", "request": { "method": "DELETE", "url": "{{baseUrl}}/customers/{{customerId}}" } },
+      { "name": "Archive product", "request": { "method": "DELETE", "url": "{{baseUrl}}/products/{{productId}}?mode=archive" } },
+      { "name": "Delete product", "request": { "method": "DELETE", "url": "{{baseUrl}}/products/{{productId}}" } },
+      { "name": "Invalid order status", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"orderItems\": [{ \"productId\": \"{{productId}}\", \"quantity\": 1 }],\n  \"status\": \"not-a-status\"\n}" }, "url": "{{baseUrl}}/orders" }, "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Invalid status returns 400', () => pm.response.to.have.status(400));"] } }] }
+    ]},
+    { "name": "Dashboard", "item": [
+      { "name": "Stats", "request": { "method": "GET", "url": "{{baseUrl}}/dashboard/stats" } },
+      { "name": "Sales", "request": { "method": "GET", "url": "{{baseUrl}}/dashboard/sales?period=weekly" } },
+      { "name": "Recent orders", "request": { "method": "GET", "url": "{{baseUrl}}/dashboard/recent-orders?limit=5" } },
+      { "name": "Top products", "request": { "method": "GET", "url": "{{baseUrl}}/dashboard/top-products?limit=4" } }
+    ]}
+  ]
+}

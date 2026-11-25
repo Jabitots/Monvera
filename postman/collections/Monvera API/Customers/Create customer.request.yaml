@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{baseUrl}}/customers"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "fullName": "Postman Customer",
+      "email": "postman.customer@example.test",
+      "contactNumber": "+1 555 010 1234",
+      "address": "100 Example Street, Test City"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Customer created', () => pm.response.to.have.status(201));
+      const j = pm.response.json(); if (j.data?._id) pm.collectionVariables.set('customerId', j.data._id);
+    language: text/javascript
+order: 1000

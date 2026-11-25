@@ -1,0 +1,16 @@
+$kind: http-request
+url: "{{baseUrl}}/products/{{productId}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "productName": "Postman Test Product",
+      "description": "Product updated during API verification.",
+      "category": "Testing",
+      "price": 13,
+      "stockQuantity": 20
+    }
+order: 4000

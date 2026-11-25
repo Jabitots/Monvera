@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{baseUrl}}/customers/{{customerId}}?mode=archive"
+method: DELETE
+queryParams:
+  mode: archive
+order: 7000

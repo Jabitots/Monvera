@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{baseUrl}}/products"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "productName": "",
+      "price": -1,
+      "stockQuantity": -3
+    }
+scripts:
+  - type: afterResponse
+    code: pm.test('Invalid body returns 400', () => pm.response.to.have.status(400));
+    language: text/javascript
+order: 6000

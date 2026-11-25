@@ -1,0 +1,8 @@
+{
+  "name": "Verdant Ledger",
+  "description": "Editorial small business management platform for products, orders, customer records, and revenue performance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

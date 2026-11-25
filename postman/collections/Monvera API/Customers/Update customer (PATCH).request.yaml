@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{baseUrl}}/customers/{{customerId}}"
+method: PATCH
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "fullName": "Postman Customer Patched"
+    }
+order: 5000

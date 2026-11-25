@@ -1,0 +1,15 @@
+# Use this workspace to collaborate
+workspace:
+  id: ddb41c2a-bd76-490a-8527-df863578f292
+
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
+cloudResources:
+  collections:
+    ../postman/collections/Monvera API: 35360eaf-44be-4e6b-a14f-2580e66d3455
+
+# All resources in the `postman/` folder are automatically registered in Local View.
+# Point to additional files outside the `postman/` folder to register them individually. Example:
+#localResources:
+#  collections:
+#    - ../tests/E2E Test Collection/

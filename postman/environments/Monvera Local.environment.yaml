@@ -1,0 +1,12 @@
+name: Monvera Local
+values:
+  - key: baseUrl
+    value: 'http://localhost:5000/api'
+  - key: customerId
+    value: ''
+  - key: productId
+    value: ''
+  - key: orderId
+    value: ''
+  - key: token
+    value: ''

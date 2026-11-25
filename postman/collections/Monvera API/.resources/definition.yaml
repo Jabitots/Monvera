@@ -1,0 +1,22 @@
+$kind: collection
+description: ""
+variables:
+  baseUrl: http://localhost:5000/api
+  customerId: ""
+  productId: ""
+  orderId: ""
+scripts:
+  - type: http:afterResponse
+    code: |-
+      const name = pm.info.requestName;
+      let expected = pm.request.method === 'GET' ? 200 : pm.request.method === 'POST' ? 201 : 200;
+      if (name === 'Duplicate email validation') expected = 409;
+      if (name === 'Invalid customer ObjectId' || name === 'Invalid product body' || name === 'Insufficient stock test' || name === 'Invalid order status') expected = 400;
+      pm.test('Expected HTTP status for ' + name, () => pm.response.to.have.status(expected));
+      pm.test('Response includes success flag', () => pm.expect(pm.response.json()).to.have.property('success').that.is.a('boolean'));
+      if (pm.response.json().success === false) pm.test('Error response includes message', () => pm.expect(pm.response.json()).to.have.property('message').that.is.a('string'));
+    language: text/javascript
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"

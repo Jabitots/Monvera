@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{baseUrl}}/dashboard/top-products?limit=4"
+method: GET
+queryParams:
+  limit: "4"
+order: 4000

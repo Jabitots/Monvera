@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{baseUrl}}/orders/{{orderId}}"
+method: PATCH
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "status": "Cancelled"
+    }
+order: 5000

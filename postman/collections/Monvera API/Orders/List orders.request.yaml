@@ -1,0 +1,8 @@
+$kind: http-request
+url: "{{baseUrl}}/orders?page=1&limit=20&status=All"
+method: GET
+queryParams:
+  page: "1"
+  limit: "20"
+  status: All
+order: 2000
